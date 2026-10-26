@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão Escolar — Alunos</title>
+<style>
+:root{--navy:#172b4d;--blue:#3157a4;--teal:#168b83;--bg:#f4f7fb;--text:#1e293b;--muted:#64748b;--line:#e3e9f2;--danger:#b93832;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,"Segoe UI",Arial,sans-serif;color:var(--text)}
+.layout{display:flex;min-height:100vh}.sidebar{width:235px;flex-shrink:0;background:var(--navy);color:white;padding:28px 17px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:750;font-size:18px;margin:0 8px 43px}.brand-mark{display:grid;place-items:center;width:39px;height:39px;border-radius:12px;background:white;color:var(--navy);font-size:20px}
+.nav-label{font-size:11px;letter-spacing:1.3px;text-transform:uppercase;color:#9fb1cc;padding:0 12px;margin-bottom:12px}
+.nav{display:flex;align-items:center;gap:12px;padding:13px 14px;margin:5px 0;border-radius:10px;color:#d9e4f4;font-size:14px}.nav.active{background:#2a4165;color:white}.nav span:first-child{font-size:18px;width:20px;text-align:center}
+.side-note{position:fixed;bottom:22px;color:#aabbd3;font-size:12px;line-height:1.7;padding:0 10px}
+main{flex:1;min-width:0;padding:30px clamp(18px,4vw,52px) 48px}.topline{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:31px}.crumb{font-size:13px;color:var(--muted)}.profile{display:flex;align-items:center;gap:10px;font-size:13px;color:#475569}.avatar{width:36px;height:36px;border-radius:50%;background:#dbeafe;color:#254b8c;display:grid;place-items:center;font-weight:700}
+.heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:25px;flex-wrap:wrap}h1{font-size:clamp(25px,3vw,32px);letter-spacing:-.8px;margin:0 0 8px;color:var(--navy)}.subtitle{margin:0;color:var(--muted);font-size:14px}
+button{font:inherit;cursor:pointer;border:0;border-radius:9px;padding:10px 14px;font-weight:650;transition:.15s}.primary{background:var(--blue);color:white}.primary:hover{background:#25478d}.secondary{background:#eef2f7;color:#334155}.danger{background:#fff0ef;color:var(--danger)}.small{font-size:12px;padding:7px 9px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:24px}.stat{background:white;border:1px solid var(--line);border-radius:14px;padding:19px 20px;display:flex;align-items:center;gap:15px;box-shadow:0 3px 12px #18365b05}.stat-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#eaf0ff;color:var(--blue);font-size:21px}.stat:nth-child(2) .stat-icon{background:#e5f7f2;color:var(--teal)}.stat:nth-child(3) .stat-icon{background:#fff4df;color:#a56a08}.stat-label{font-size:12px;color:var(--muted);margin-bottom:6px}.stat-value{font-size:24px;font-weight:750;color:var(--navy)}
+.panel{background:white;border:1px solid var(--line);border-radius:15px;box-shadow:0 5px 18px #18365b07;overflow:hidden}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:21px 22px;border-bottom:1px solid var(--line);flex-wrap:wrap}.panel-head h2{font-size:16px;margin:0 0 5px;color:var(--navy)}.panel-head p{font-size:12px;color:var(--muted);margin:0}
+.search{padding:10px 12px;border:1px solid #dbe3ed;border-radius:9px;outline:none;width:230px;font-size:13px}.search:focus,input:focus{border-color:#6687cb;box-shadow:0 0 0 3px #3157a418}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th{text-align:left;background:#fafbfd;color:#748198;font-size:11px;text-transform:uppercase;letter-spacing:.65px;padding:13px 19px;font-weight:700}td{padding:15px 19px;border-top:1px solid #edf1f6;font-size:13px}tbody tr:hover{background:#fbfdff}.student{display:flex;align-items:center;gap:10px;font-weight:650}.student-avatar{width:33px;height:33px;border-radius:10px;background:#e9effb;color:#35528c;display:grid;place-items:center;font-size:12px;font-weight:750}.freq{display:inline-block;border-radius:20px;padding:5px 9px;background:#e4f7ef;color:#16745e;font-size:11px;font-weight:750}.freq.low{background:#fff0df;color:#a45d08}.actions{display:flex;gap:7px}.empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:14px}.empty strong{display:block;color:#334155;margin-bottom:7px;font-size:16px}.footer{padding:14px 22px;border-top:1px solid var(--line);color:#8390a4;font-size:12px}
+.flash{padding:12px 15px;border-radius:9px;margin-bottom:18px;font-size:13px}.flash.sucesso{background:#e5f7ef;color:#12634f}.flash.erro{background:#fff0ef;color:#a52e28}
+.overlay{display:none;position:fixed;inset:0;background:#0f1f38a6;z-index:5;align-items:center;justify-content:center;padding:20px}.overlay.show{display:flex}.modal{background:white;border-radius:16px;width:min(100%,510px);box-shadow:0 20px 70px #07162e55;overflow:hidden}.modal-head{padding:21px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.modal-head h2{font-size:19px;margin:0;color:var(--navy)}.close{background:#f0f3f8;color:#64748b;padding:7px 10px}.form{padding:22px 24px}.field{margin-bottom:16px}.field label{display:block;font-size:12px;font-weight:700;color:#475569;margin-bottom:7px}.field input{width:100%;padding:11px 12px;border:1px solid #dbe3ed;border-radius:9px;outline:none;font:inherit;font-size:14px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:22px}
+@media(max-width:850px){.sidebar{width:75px;padding:22px 9px}.brand{margin:0 8px 38px}.brand-name,.nav-label,.nav-text,.side-note{display:none}.nav{justify-content:center;padding:13px 5px}.nav span:first-child{font-size:20px}.stats{grid-template-columns:1fr}.stat{padding:15px 18px}main{padding-top:22px}}
+@media(max-width:520px){.profile .profile-text{display:none}.fields{grid-template-columns:1fr;gap:0}.search{width:100%}.panel-head{align-items:stretch}.heading{align-items:flex-start}.topline{margin-bottom:25px}th,td{padding-left:12px;padding-right:12px}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">▦</div><span class="brand-name">Gestão Escolar</span></div>
+    <div class="nav-label">Menu principal</div>
+    <div class="nav active"><span>▤</span><span class="nav-text">Alunos</span></div>
+    <button class="nav" id="addNav" style="width:100%;border:0;text-align:left;background:transparent"><span>＋</span><span class="nav-text">Cadastrar aluno</span></button>
+    <div class="side-note">Sistema de cadastro acadêmico<br>Notas e frequência dos alunos</div>
+  </aside>
+  <main>
+    <div class="topline"><div class="crumb">Painel / <strong>Alunos</strong></div><div class="profile"><div class="avatar">GE</div><div class="profile-text"><strong>Gestão Escolar</strong><br><span style="color:#94a3b8">Administrador</span></div></div></div>
+    <section class="heading"><div><h1>Alunos cadastrados</h1><p class="subtitle">Gerencie notas e frequência em um só lugar.</p></div><button class="primary" id="addButton">＋ Novo aluno</button></section>
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+      {% if mensagens %}{% for categoria, mensagem in mensagens %}<div class="flash {{ categoria }}">{{ mensagem }}</div>{% endfor %}{% endif %}
+    {% endwith %}
+    <section class="stats">
+      <div class="stat"><div class="stat-icon">♙</div><div><div class="stat-label">Total de alunos</div><div class="stat-value">{{ alunos|length }}</div></div></div>
+      <div class="stat"><div class="stat-icon">✓</div><div><div class="stat-label">Média geral</div><div class="stat-value">{{ "%.1f"|format(media_geral)|replace(".", ",") if media_geral is not none else "—" }}</div></div></div>
+      <div class="stat"><div class="stat-icon">◷</div><div><div class="stat-label">Frequência média</div><div class="stat-value">{{ "%.1f"|format(frequencia_media)|replace(".", ",") ~ "%" if frequencia_media is not none else "—" }}</div></div></div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><div><h2>Lista de registros</h2><p>Consulte, edite ou remova os dados cadastrados.</p></div><input class="search" id="search" placeholder="Buscar aluno..." aria-label="Buscar aluno"></div>
+      <div class="table-wrap">
+        <table><thead><tr><th>ID</th><th>Aluno</th><th>Nota 1</th><th>Nota 2</th><th>Frequência</th><th>Ações</th></tr></thead>
+        <tbody id="studentRows">
+        {% for aluno in alunos %}
+          <tr data-name="{{ aluno.nome|lower }}">
+            <td style="color:#64748b;font-weight:650">#{{ aluno.id }}</td>
+            <td><div class="student"><div class="student-avatar">{{ aluno.nome[:1]|upper }}</div>{{ aluno.nome }}</div></td>
+            <td>{{ "%.1f"|format(aluno.nota1)|replace(".", ",") }}</td>
+            <td>{{ "%.1f"|format(aluno.nota2)|replace(".", ",") }}</td>
+            <td><span class="freq {{ 'low' if aluno.frequencia < 75 else '' }}">{{ aluno.frequencia }}%</span></td>
+            <td><div class="actions">
+              <button class="secondary small edit-btn" data-id="{{ aluno.id }}" data-name="{{ aluno.nome }}" data-grade1="{{ aluno.nota1 }}" data-grade2="{{ aluno.nota2 }}" data-frequency="{{ aluno.frequencia }}">Editar</button>
+              <form action="{{ url_for('deletar', id_reg=aluno.id) }}" method="post" onsubmit="return confirm('Deseja realmente excluir {{ aluno.nome|e }}?')"><button class="danger small" type="submit">Excluir</button></form>
+            </div></td>
+          </tr>
+        {% endfor %}
+        </tbody></table>
+        <div class="empty" id="emptyState" {% if alunos %}style="display:none"{% endif %}><strong>Nenhum aluno cadastrado</strong>Comece adicionando o primeiro registro.</div>
+      </div>
+      <div class="footer" id="resultCount">{{ alunos|length }} registro(s) • Os dados são salvos em dados.txt no servidor.</div>
+    </section>
+  </main>
+</div>
+
+<div class="overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="modal-head"><h2 id="modalTitle">Cadastrar aluno</h2><button class="close" id="closeModal" aria-label="Fechar">✕</button></div>
+    <form class="form" id="studentForm" method="post" action="{{ url_for('criar') }}">
+      <div class="field"><label for="name">Nome completo</label><input id="name" name="nome" maxlength="100" placeholder="Ex.: Ana Souza" required></div>
+      <div class="fields">
+        <div class="field"><label for="grade1">Nota da 1ª unidade (0–10)</label><input id="grade1" name="nota1" type="number" min="0" max="10" step="0.1" placeholder="Ex.: 8,5" required></div>
+        <div class="field"><label for="grade2">Nota da 2ª unidade (0–10)</label><input id="grade2" name="nota2" type="number" min="0" max="10" step="0.1" placeholder="Ex.: 9,0" required></div>
+      </div>
+      <div class="field"><label for="frequency">Frequência (%)</label><input id="frequency" name="frequencia" type="number" min="0" max="100" step="1" placeholder="Ex.: 90" required></div>
+      <div class="form-actions"><button type="button" class="secondary" id="cancelModal">Cancelar</button><button type="submit" class="primary" id="saveButton">Salvar aluno</button></div>
+    </form>
+  </div>
+</div>
+<script>
+const overlay=document.getElementById('modalOverlay');
+const form=document.getElementById('studentForm');
+const title=document.getElementById('modalTitle');
+const saveButton=document.getElementById('saveButton');
+const search=document.getElementById('search');
+function openCreate(){form.action="{{ url_for('criar') }}";form.reset();title.textContent='Cadastrar aluno';saveButton.textContent='Salvar aluno';overlay.classList.add('show');document.getElementById('name').focus();}
+function closeModal(){overlay.classList.remove('show');}
+document.getElementById('addButton').addEventListener('click',openCreate);
+document.getElementById('addNav').addEventListener('click',openCreate);
+document.getElementById('closeModal').addEventListener('click',closeModal);
+document.getElementById('cancelModal').addEventListener('click',closeModal);
+overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+document.querySelectorAll('.edit-btn').forEach(button=>button.addEventListener('click',()=>{
+  form.action='/atualizar/'+button.dataset.id;
+  document.getElementById('name').value=button.dataset.name;
+  document.getElementById('grade1').value=button.dataset.grade1;
+  document.getElementById('grade2').value=button.dataset.grade2;
+  document.getElementById('frequency').value=button.dataset.frequency;
+  title.textContent='Editar aluno — ID '+button.dataset.id;
+  saveButton.textContent='Salvar alterações';
+  overlay.classList.add('show');
+}));
+search.addEventListener('input',()=>{
+  const term=search.value.trim().toLocaleLowerCase('pt-BR');
+  let shown=0;
+  document.querySelectorAll('#studentRows tr').forEach(row=>{
+    const visible=row.dataset.name.includes(term);
+    row.style.display=visible?'':'none';
+    if(visible)shown++;
+  });
+  document.getElementById('emptyState').style.display=shown===0?'block':'none';
+  document.getElementById('resultCount').textContent=shown+' registro(s) exibido(s) • Os dados são salvos em dados.txt no servidor.';
+});
+</script>
+</body>
+</html>
